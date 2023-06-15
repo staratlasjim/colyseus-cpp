@@ -1,0 +1,30 @@
+{
+  "name" : "colyseustest",
+  "version-string" : "1.0.0",
+  "builtin-baseline" : "0ccb3d11406922bef1dcc29002f68f633a321f19",
+  "dependencies" : [ {
+    "name" : "boost",
+    "version>=" : "1.82.0#1"
+  }, {
+    "name" : "boost-asio",
+    "version>=" : "1.82.0#1"
+  }, {
+    "name" : "boost-beast",
+    "version>=" : "1.82.0#1"
+  }, {
+    "name" : "poco",
+    "version>=" : "1.12.4#4",
+    "features" : [ "netssl" ]
+  }, {
+    "name" : "nlohmann-json",
+    "version>=" : "3.11.2",
+    "$comment" : "    find_package(nlohmann_json CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE nlohmann_json::nlohmann_json)\n"
+  }, {
+    "name" : "msgpack",
+    "version>=" : "6.0.0",
+    "$comment" : "    # this is heuristically generated, and may not be correct\n\n    find_package(msgpack-cxx CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE msgpack-cxx)\n"
+  }, {
+    "name" : "gtest",
+    "version>=" : "1.13.0"
+  } ]
+}
