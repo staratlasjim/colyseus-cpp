@@ -5,17 +5,20 @@
 #include "Axios.hpp"
 #include <Poco/Exception.h>
 #include <Poco/JSON/Stringifier.h>
-
+#include <nlohmann/json.hpp>
+#include "Utils.hpp"
 
 using Poco::JSON::Stringifier;
 using Poco::Exception;
 using Poco::JSON::Parser;
 using Poco::JSON::Object;
+using URI = Poco::URI;
 
 Axios::Axios() = default;
+
 Axios::~Axios() = default;
 
-Axios::Response Axios::get(const std::string& url, ResponseType responseType) {
+Axios::Response Axios::get(const std::string &url, ResponseType responseType) {
     URI uri(url);
     HTTPClientSession session(uri.getHost(), uri.getPort());
 
@@ -23,7 +26,7 @@ Axios::Response Axios::get(const std::string& url, ResponseType responseType) {
     session.sendRequest(request);
 
     HTTPResponse res;
-    std::istream& rs = session.receiveResponse(res);
+    std::istream &rs = session.receiveResponse(res);
 
     Response response;
     response.status = res.getStatus();
@@ -39,7 +42,7 @@ Axios::Response Axios::get(const std::string& url, ResponseType responseType) {
             Parser parser;
             Poco::Dynamic::Var result = parser.parse(str);
             response.json = result.extract<Object::Ptr>();
-        } catch (Poco::Exception& e) {
+        } catch (Poco::Exception &e) {
             // Handle JSON parsing errors
             std::stringstream error;
             error << "JSON parsing error: " << e.displayText();
@@ -52,7 +55,8 @@ Axios::Response Axios::get(const std::string& url, ResponseType responseType) {
     return response;
 }
 
-Axios::Response Axios::post(const std::string& url, Ptr data) {
+// todo: need way better error handling here.
+Axios::Response Axios::post(const std::string &url, Ptr data) {
     URI uri(url);
     HTTPClientSession session(uri.getHost(), uri.getPort());
 
@@ -60,37 +64,43 @@ Axios::Response Axios::post(const std::string& url, Ptr data) {
     Stringifier::stringify(data, ss);
 
     HTTPRequest request(HTTPRequest::HTTP_POST, uri.getPathAndQuery(), HTTPRequest::HTTP_1_1);
+    request.set("Accept", "application/json");
     request.setContentType("application/json");
     request.setContentLength(ss.str().length());
 
-    std::ostream& os = session.sendRequest(request);
-    os << ss.str();
-    std::cout << "SENDING JSON" << std::endl << ss.str() << std::endl;
-
-
-    HTTPResponse res;
-    std::istream& rs = session.receiveResponse(res);
-
     Response response;
-    response.status = res.getStatus();
-    response.statusText = res.getReason();
-    response.responseType = ResponseType::JSON;
-
-    std::stringstream responseStream;
-    Poco::StreamCopier::copyStream(rs, responseStream);
-    std::string str = responseStream.str();
-    std::cout << "JSON" << std::endl << str << std::endl;
 
     try {
+        std::ostream &os = session.sendRequest(request);
+        os << ss.str();
+        std::cout << "SENDING JSON" << std::endl << ss.str() << std::endl;
+
+        HTTPResponse res;
+        std::istream &rs = session.receiveResponse(res);
+
+        response.status = res.getStatus();
+        response.statusText = res.getReason();
+        response.responseType = ResponseType::JSON;
+
+        std::stringstream responseStream;
+        Poco::StreamCopier::copyStream(rs, responseStream);
+        std::string str = responseStream.str();
+        std::cout << "JSON" << std::endl << str << std::endl;
+
         Parser parser;
         Poco::Dynamic::Var result = parser.parse(str);
         response.json = result.extract<Object::Ptr>();
-    } catch (Poco::Exception& e) {
+    } catch (Poco::Exception &e) {
         // Handle JSON parsing errors
         std::stringstream error;
-        error << "JSON parsing error" << e.message() << std::endl;
-        throw Exception(error.str());
+        error << "JSON parsing error (" << e.code() << ") " << e.displayText() << " - " << e.message() << std::endl;
+        throw std::runtime_error(error.str());
     }
 
     return response;
+}
+
+Axios::Response Axios::post(const std::string &url, const nlohmann::json &data) {
+    Poco::JSON::Object::Ptr pObj = toPocoJsonObject(data);
+    return post(url, pObj);
 }

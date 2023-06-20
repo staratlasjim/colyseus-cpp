@@ -26,8 +26,9 @@ add_library(ColyseusLib src/core/schema.h
         src/poco/Connection.cpp
         src/poco/Room.hpp
         src/core/Protocol.hpp
-        src/poco/Client.cpp
-        src/poco/Client.hpp)
+        src/poco/Client.hpp
+        src/poco/Utils.hpp
+        src/poco/Utils.cpp)
 target_link_libraries(ColyseusLib PUBLIC Poco::Foundation Poco::Net Poco::NetSSL Poco::JSON Boost::boost nlohmann_json::nlohmann_json msgpack-cxx)
 add_executable(colyseusCpp main.cpp)
 target_link_libraries(colyseusCpp PRIVATE ColyseusLib Poco::Foundation Poco::Net Poco::NetSSL Poco::JSON Boost::boost nlohmann_json::nlohmann_json msgpack-cxx)
@@ -36,7 +37,9 @@ target_link_libraries(colyseusCpp PRIVATE ColyseusLib Poco::Foundation Poco::Net
 add_executable(colyseusCppTests
         src/tests/ConnectionTest.cpp
         src/tests/MockWebSocketServer.hpp
-        src/tests/MockWebSocketServer.cpp)
+        src/tests/MockWebSocketServer.cpp
+        src/tests/UtilsTests.cpp
+        src/tests/ClientTest.cpp)
 target_link_libraries(colyseusCppTests PRIVATE ColyseusLib GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 #add_test(NAME WebSocketExampleTests COMMAND WebSocketExampleTests)
 add_test(AllTestsInMain colyseusCppTests)

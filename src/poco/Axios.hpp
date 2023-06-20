@@ -14,11 +14,11 @@
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Parser.h>
 #include <sstream>
+#include <nlohmann/json.hpp>
 
 using HTTPClientSession = Poco::Net::HTTPClientSession;
 using HTTPRequest = Poco::Net::HTTPRequest;
 using HTTPResponse = Poco::Net::HTTPResponse;
-using URI = Poco::URI;
 using Ptr = Poco::JSON::Object::Ptr;
 
 class Axios {
@@ -42,6 +42,8 @@ public:
 
     Response get(const std::string& url, ResponseType responseType);
     Response post(const std::string& url, Ptr data);
+
+    Response post(const std::string& url, const nlohmann::json& data);
 };
 
 

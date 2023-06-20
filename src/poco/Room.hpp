@@ -40,8 +40,10 @@ public:
     }
 
     inline const std::string& GetId() { return Id; }
+    inline void SetId(const std::string& id) { this->Id = id; }
     inline const std::string& GetName() { return Name; }
     inline const std::string& GetSessionId() { return SessionId; }
+    inline void SetSessionId(const std::string& sessionId) { this->SessionId = sessionId; }
     inline const std::string& GetSerializerId() { return SerializerId; }
     inline bool HasJoined() { return bHasJoined; }
 
