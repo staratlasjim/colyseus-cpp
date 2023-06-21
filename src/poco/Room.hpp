@@ -232,8 +232,11 @@ protected:
 
     void _onMessage(const std::vector<uint8_t>& data)
     {
+        Poco::Thread::TID threadId = Poco::Thread::currentTid();
+        std::cout << "\tRoom::_onMessage:: Current Thread ID: " << threadId << std::endl;
+
         int size = data.size();
-        std::cout << "Received binary data of size: " << size << std::endl;
+        std::cout << "\tRoom::_onMessage:: Received binary data of size: " << size << std::endl;
 
         if(size <= 0) {
             return;
@@ -242,7 +245,7 @@ protected:
         std::unique_ptr<Iterator> iterator = std::make_unique<Iterator>();
         iterator->offset = 0;
 
-        std::cout << "myHandler bytes => ";
+        std::cout << "room handler bytes => ";
         for (uint8_t byte: data) {
             std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte) << " ";
         }
@@ -278,10 +281,15 @@ protected:
                     std::cout << "no hand shake" << std::endl;
                 }
 
+                std::cout << "~~~ OnJoin?" << std::endl;
                 if (OnJoin)
                 {
+                    std::cout << "\t~~~ calling OnJoin" << std::endl;
                     OnJoin();
+                    std::cout << "\t~~~ OnJoin Done" << std::endl;
                 }
+
+                std::cout << "\t~~~ sending JOIN_ROOM" << std::endl;
 
                 std::vector<uint8_t> sendData = {static_cast<uint8_t>(Protocol::JOIN_ROOM)};
                 std::cout << "sending data" << std::endl;
@@ -324,7 +332,7 @@ protected:
 
                 std::vector<uint8_t> bytes(data.begin(), data.end());
                 bytes.erase(bytes.begin());
-                ApplyPatch(bytes, iterator.get());
+                ApplyPatch(bytes, iterator.get()->offset);
                 break;
             }
             case Protocol::ROOM_DATA:

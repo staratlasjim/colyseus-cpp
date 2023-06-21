@@ -9,6 +9,10 @@
 
 #include <string>
 #include <algorithm>
+#include <iostream>
+#include <thread>
+#include <future>
+#include <chrono>
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Parser.h>
 #include <nlohmann/json.hpp>
@@ -28,6 +32,10 @@ inline std::string replaceAll(std::string str, const std::string& from, const st
     }
     return str;
 }
+
+std::future<void> setTimeout(const std::function<void()>& func, int delay);
+
+std::int64_t getTimeSinceEpochMs();
 
 Poco::Dynamic::Var toPoco(const nlohmann::json& j);
 

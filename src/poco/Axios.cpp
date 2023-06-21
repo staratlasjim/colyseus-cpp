@@ -60,19 +60,30 @@ Axios::Response Axios::post(const std::string &url, Ptr data) {
     URI uri(url);
     HTTPClientSession session(uri.getHost(), uri.getPort());
 
-    std::stringstream ss;
-    Stringifier::stringify(data, ss);
+    bool isDataEmpty = data.isNull() || data->size() == 0;
 
+    std::stringstream ss;
+    if(!isDataEmpty)
+    {
+        Stringifier::stringify(data, ss);
+    }
+    else
+    {
+        ss << "{}";
+    }
+
+    std::string dataStr = ss.str();
     HTTPRequest request(HTTPRequest::HTTP_POST, uri.getPathAndQuery(), HTTPRequest::HTTP_1_1);
     request.set("Accept", "application/json");
     request.setContentType("application/json");
-    request.setContentLength(ss.str().length());
+    request.setContentLength(dataStr.length());
 
     Response response;
 
     try {
         std::ostream &os = session.sendRequest(request);
-        os << ss.str();
+        os << dataStr;
+        os.flush();
         std::cout << "SENDING JSON" << std::endl << ss.str() << std::endl;
 
         HTTPResponse res;

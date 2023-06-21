@@ -40,6 +40,7 @@ public:
 
     inline void Send(const std::vector<uint8_t>& buffer) const
     {
+        std::cout << "\t~~~ sending buffer: " << buffer.size() << std::endl;
         _socket->sendBytes(buffer.data(), buffer.size(), Poco::Net::WebSocket::FRAME_BINARY);
     }
 

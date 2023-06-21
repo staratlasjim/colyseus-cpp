@@ -5,6 +5,9 @@
 
 
 Poco::JSON::Object::Ptr toPocoJsonObject(const nlohmann::json &j) {
+    if(j.empty()) {
+        return {};
+    }
     if (j.is_object()) {
         return toPoco(j).extract<Poco::JSON::Object::Ptr>();
     } else {
@@ -89,6 +92,27 @@ nlohmann::json toNlohmannJson(const Poco::Dynamic::Var &var) {
             throw std::runtime_error("Unsupported type in Poco::JSON:: " + e.message() + " :: " + var.toString());
         }
 
+    }
+}
+
+std::future<void> setTimeout(const std::function<void()> &func, int delay) {
+    return std::async(std::launch::async, [func, delay]() {
+        // Sleep for the required interval
+        std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+
+        // Call the function
+        func();
+    });
+}
+
+std::int64_t getTimeSinceEpochMs() {
+    using namespace std::chrono;
+    using Clock = std::chrono::steady_clock;
+
+    if (Clock::period::num == 1 && Clock::period::den == 1000) {
+        return duration_cast<milliseconds>(Clock::now().time_since_epoch()).count();
+    } else {
+        return time_point_cast<milliseconds>(Clock::now()).time_since_epoch().count();
     }
 }
 

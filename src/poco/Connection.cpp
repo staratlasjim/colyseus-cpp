@@ -80,38 +80,40 @@ void Connection::run() {
 
     _socket->setReceiveTimeout(std::chrono::seconds(1));
 
+    Poco::Thread::TID threadId = Poco::Thread::currentTid();
+    std::cout << "Connection::run Current Thread ID: " << threadId << std::endl;
+
     while (shouldRun)
     {
         try
         {
-//            std::cout << "\n\t shouldRun " << (shouldRun ? "Yes" : "No") << std::endl;
+            std::cout << "\n\t shouldRun " << (shouldRun ? "Yes" : "No") << std::endl;
             int n = _socket->receiveFrame(buffer, sizeof(buffer), flags);
             int opcode = flags & Poco::Net::WebSocket::FRAME_OP_BITMASK;
-//            std::cout << "\n\t Received frame " << n << " bytes of data" << std::endl;
+            std::cout << "\n\t Received frame " << n << " bytes of data" << std::endl;
             if(n <= 0)
                 continue;
 
             if (opcode == Poco::Net::WebSocket::FRAME_OP_TEXT && OnText)
             {
-//                std::cout << "\n\t FRAME_OP_TEXT " << n << " bytes of data" << std::endl;
+                std::cout << "\n\t FRAME_OP_TEXT " << n << " bytes of data" << std::endl;
                 OnText(std::string(buffer, buffer + n));
             }
             if (opcode == Poco::Net::WebSocket::FRAME_OP_BINARY && OnMessage)
             {
-//                std::cout << "\n\t FRAME_OP_BINARY " << n << " bytes of data" << std::endl;
-                //OnMessage(std::string(buffer, n));
+                std::cout << "\n\t FRAME_OP_BINARY " << n << " bytes of data" << std::endl;
                 std::vector<uint8_t> vec(buffer, buffer + n);
                 OnMessage(vec);
             }
             else if (opcode == Poco::Net::WebSocket::FRAME_OP_CLOSE)
             {
-//                std::cout << "\n\t Close called " << std::endl;
+                std::cout << "\n\t Close called " << std::endl;
                 shouldRun = false;
                 break;
             }
         }
         catch (Poco::TimeoutException&) {
-            //std::cout << "time out" << std::endl;
+            std::cout << "time out" << std::endl;
         }
         catch (const Poco::Exception& e)
         {

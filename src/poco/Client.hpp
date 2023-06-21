@@ -72,7 +72,7 @@ public:
 private:
     template <typename S>
     void CreateMatchMakeRequest(const std::string& Method, const std::string& RoomName, const JoinOptions& Options,
-                                std::function<void(std::shared_ptr<MatchMakeError>, std::shared_ptr<Room<S>>)> Callback)
+                                const std::function<void(std::shared_ptr<MatchMakeError>, std::shared_ptr<Room<S>>)>& Callback)
     {
         try {
             Axios axios;
@@ -83,16 +83,18 @@ private:
             // todo: Handle ERRORS!!!!
             std::shared_ptr<Room<S>> room = std::make_shared<Room<S>>(RoomName);
 
-            Poco::JSON::Object::Ptr roomData = response.json->getObject("room");
+            Poco::JSON::Object::Ptr responseData = response.json;
 
             // check for error
-            if(roomData->has("error") && !roomData->getValue<std::string>("error").empty()) {
-                int Code = roomData->getValue<int>("code");
-                std::string Message = roomData->getValue<std::string>("error");
+            if(responseData->has("error") && !responseData->getValue<std::string>("error").empty()) {
+                int Code = responseData->getValue<int>("code");
+                std::string Message = responseData->getValue<std::string>("error");
                 std::cerr << "Error returned in JSON from matchmaking room (code: " << Code << ") " << Message << std::endl;
                 Callback(std::make_shared<MatchMakeError>(Code, Message), nullptr);
                 return;
             }
+
+            Poco::JSON::Object::Ptr roomData = response.json->getObject("room");
 
             int clients = roomData->getValue<int>("clients");
             std::string createdAt = roomData->getValue<std::string>("createdAt");
@@ -102,7 +104,7 @@ private:
             std::string name = roomData->getValue<std::string>("name");
             std::string processId = roomData->getValue<std::string>("processId");
             std::string roomId = roomData->getValue<std::string>("roomId");
-            std::string sessionId = roomData->getValue<std::string>("sessionId");
+            std::string sessionId = responseData->getValue<std::string>("sessionId");
 
             std::cout << "Room Name: " << name << ", Clients: " << clients << ", Created At: " << createdAt << std::endl;
             std::cout << "Max Clients: " << maxClients << std::endl;
@@ -124,8 +126,11 @@ private:
             };
 
             room->OnJoin = [room, Callback]() {
+                Poco::Thread::TID threadId = Poco::Thread::currentTid();
+                std::cout << "room->OnJoin Current Thread ID: " << threadId << std::endl;
                 room->OnError = nullptr;
                 Callback(nullptr, room);
+                std::cout << "\t~~~ after callback" << std::endl;
                 room->OnJoin = nullptr;
             };
 
@@ -133,7 +138,9 @@ private:
         }
         catch(std::runtime_error& error) {
             std::cerr << "Error! " << error.what() << std::endl;
-            Callback(std::make_shared<MatchMakeError>(400, std::string(error.what()), nullptr));
+            auto matchMakeError = std::make_shared<MatchMakeError>(400, std::string(error.what()));
+            std::shared_ptr<Room<S>> room = nullptr;
+            Callback(matchMakeError, room);
         }
     }
 };
