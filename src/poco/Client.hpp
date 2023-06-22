@@ -11,6 +11,7 @@
 #include "Axios.hpp"
 #include <nlohmann/json.hpp>
 #include <utility>
+#include <limits>
 
 typedef nlohmann::json JoinOptions;
 
@@ -69,7 +70,23 @@ public:
         CreateMatchMakeRequest<S>("joinById", roomId, {{"sessionId", sessionId}}, Callback);
     }
 
-private:
+protected:
+    template <typename S>
+    S getValue(Poco::JSON::Object::Ptr obj, const std::string& name, S defaultVal) {
+        if(obj.isNull()) {
+            return defaultVal;
+        }
+        if(!obj->has(name)) {
+            return defaultVal;
+        }
+        try {
+          S val = obj->getValue<S>(name);
+          return val;
+        } catch(...) {
+            return defaultVal;
+        }
+    }
+
     template <typename S>
     void CreateMatchMakeRequest(const std::string& Method, const std::string& RoomName, const JoinOptions& Options,
                                 const std::function<void(std::shared_ptr<MatchMakeError>, std::shared_ptr<Room<S>>)>& Callback)
@@ -96,15 +113,19 @@ private:
 
             Poco::JSON::Object::Ptr roomData = response.json->getObject("room");
 
-            int clients = roomData->getValue<int>("clients");
-            std::string createdAt = roomData->getValue<std::string>("createdAt");
-            int maxClients = roomData->getValue<int>("maxClients");
-            Poco::JSON::Object::Ptr metadata = roomData->getObject("metadata");
+            const int MAX = std::numeric_limits<int>::max();
+            const std::string EMPTY;
 
-            std::string name = roomData->getValue<std::string>("name");
-            std::string processId = roomData->getValue<std::string>("processId");
-            std::string roomId = roomData->getValue<std::string>("roomId");
-            std::string sessionId = responseData->getValue<std::string>("sessionId");
+            int clients = getValue<int>(roomData, "clients", 0);
+            std::string createdAt = getValue<std::string>(roomData, "createdAt", EMPTY);;
+            int maxClients = getValue<int>(roomData, "maxClients", MAX);
+            // todo: deal with metadata
+//            Poco::JSON::Object::Ptr metadata = roomData->getObject("metadata");
+
+            std::string name = getValue<std::string>(roomData, "name", EMPTY);
+            std::string processId = getValue<std::string>(roomData,"processId", EMPTY);
+            std::string roomId = getValue<std::string>(roomData, "roomId", EMPTY);
+            std::string sessionId = getValue<std::string>(responseData, "sessionId", EMPTY);
 
             std::cout << "Room Name: " << name << ", Clients: " << clients << ", Created At: " << createdAt << std::endl;
             std::cout << "Max Clients: " << maxClients << std::endl;

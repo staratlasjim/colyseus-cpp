@@ -73,7 +73,8 @@ void Connection::Close(int code, const std::string& reason)
 }
 
 void Connection::run() {
-    uint8_t buffer[1024];
+//    uint8_t buffer[1024];
+    Poco::Buffer<uint8_t> buffer(64000);
     int flags = 0;
 
     std::cout << "\n\t Running \n\n" << std::endl;
@@ -88,7 +89,7 @@ void Connection::run() {
         try
         {
             std::cout << "\n\t shouldRun " << (shouldRun ? "Yes" : "No") << std::endl;
-            int n = _socket->receiveFrame(buffer, sizeof(buffer), flags);
+            int n = _socket->receiveFrame(buffer.begin(), static_cast<int>(buffer.size()), flags);
             int opcode = flags & Poco::Net::WebSocket::FRAME_OP_BITMASK;
             std::cout << "\n\t Received frame " << n << " bytes of data" << std::endl;
             if(n <= 0)
@@ -97,12 +98,12 @@ void Connection::run() {
             if (opcode == Poco::Net::WebSocket::FRAME_OP_TEXT && OnText)
             {
                 std::cout << "\n\t FRAME_OP_TEXT " << n << " bytes of data" << std::endl;
-                OnText(std::string(buffer, buffer + n));
+                OnText(std::string(buffer.begin(), buffer.begin() + n));
             }
             if (opcode == Poco::Net::WebSocket::FRAME_OP_BINARY && OnMessage)
             {
                 std::cout << "\n\t FRAME_OP_BINARY " << n << " bytes of data" << std::endl;
-                std::vector<uint8_t> vec(buffer, buffer + n);
+                std::vector<uint8_t> vec(buffer.begin(), buffer.begin() + n);
                 OnMessage(vec);
             }
             else if (opcode == Poco::Net::WebSocket::FRAME_OP_CLOSE)

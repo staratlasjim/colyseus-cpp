@@ -28,9 +28,17 @@ add_library(ColyseusLib src/core/schema.h
         src/core/Protocol.hpp
         src/poco/Client.hpp
         src/poco/Utils.hpp
-        src/poco/Utils.cpp)
+        src/poco/Utils.cpp
+        src/core/Serializer.cpp
+        src/gen/gmp/OrderSchema.hpp
+        src/gen/gmp/OverviewRoomState.hpp
+)
 target_link_libraries(ColyseusLib PUBLIC Poco::Foundation Poco::Net Poco::NetSSL Poco::JSON Boost::boost nlohmann_json::nlohmann_json msgpack-cxx)
-add_executable(colyseusCpp main.cpp)
+add_executable(colyseusCpp main.cpp
+        src/poco/apps/DummyUpdater.cpp
+        src/poco/apps/DummyUpdater.hpp
+        src/poco/apps/MarketPlaceApp.cpp
+        src/poco/apps/MarketPlaceApp.hpp)
 target_link_libraries(colyseusCpp PRIVATE ColyseusLib Poco::Foundation Poco::Net Poco::NetSSL Poco::JSON Boost::boost nlohmann_json::nlohmann_json msgpack-cxx)
 
 # Create a test executable and link it with the Google Test library

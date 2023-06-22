@@ -34,25 +34,11 @@ protected:
 template <typename S>
 using SerializerFactory = std::function<std::shared_ptr<Serializer<S>>()>;
 
-std::map<std::string, std::shared_ptr<void>>& getSerializers() {
-    static std::map<std::string, std::shared_ptr<void>> serializers;
-    return serializers;
-}
+std::map<std::string, std::shared_ptr<void>>& getSerializers();
 
-void registerSerializer(const std::string& id, std::shared_ptr<void> serializer) {
-    getSerializers()[id] = serializer;
-}
+void registerSerializer(const std::string& id, std::shared_ptr<void> serializer);
 
-std::shared_ptr<void> getSerializer(const std::string& id) {
-    auto& serializers = getSerializers();
-    auto it = serializers.find(id);
-    if (it != serializers.end()) {
-        return it->second;
-    }
-    else {
-        return nullptr;
-    }
-}
+std::shared_ptr<void> getSerializer(const std::string& id);
 
 
 

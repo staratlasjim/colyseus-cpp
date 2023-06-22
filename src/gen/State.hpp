@@ -38,7 +38,6 @@ protected:
 		if (field == "lastMessage")
 		{
 			return this->lastMessage;
-
 		}
 		return Schema::getString(field);
 	}
@@ -47,6 +46,7 @@ protected:
 	{
 		if (field == "lastMessage")
 		{
+            std::cout << "Setting lastMessage:\t" << value << std::endl;
 			this->lastMessage = value;
 			return;
 

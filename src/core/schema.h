@@ -69,59 +69,59 @@ namespace colyseus
             // T previousValue;
         };
 
-        bool IsLittleEndian()
+        inline bool IsLittleEndian()
         {
             int i = 1;
             return (int)*((unsigned char *)&i) == 1;
         }
 
-        uint8_t uint8(std::vector<uint8_t>& bytes, Iterator* it) {
+        inline uint8_t uint8(std::vector<uint8_t>& bytes, Iterator* it) {
             return bytes[it->offset++];
         }
 
-        uint8_t uint8(const uint8_t* bytes, Iterator* it) {
+        inline uint8_t uint8(const uint8_t* bytes, Iterator* it) {
             return bytes[it->offset++];
         }
 
-        int8_t int8(std::vector<uint8_t>& bytes, Iterator* it) {
+        inline int8_t int8(std::vector<uint8_t>& bytes, Iterator* it) {
             return static_cast<int8_t>(uint8(bytes, it));
         }
 
-        uint16_t uint16(std::vector<uint8_t>& bytes, Iterator* it) {
+        inline uint16_t uint16(std::vector<uint8_t>& bytes, Iterator* it) {
             return bytes[it->offset++] | bytes[it->offset++] << 8;
         }
 
-        uint16_t uint16(const uint8_t* bytes, Iterator* it) {
+        inline uint16_t uint16(const uint8_t* bytes, Iterator* it) {
             return bytes[it->offset++] | bytes[it->offset++] << 8;
         }
 
-        int16_t int16(std::vector<uint8_t>& bytes, Iterator* it) {
+        inline int16_t int16(std::vector<uint8_t>& bytes, Iterator* it) {
             return static_cast<int16_t>(uint16(bytes, it));
         }
 
-        int32_t int32(std::vector<uint8_t>& bytes, Iterator* it) {
+        inline int32_t int32(std::vector<uint8_t>& bytes, Iterator* it) {
             return bytes[it->offset++] |
                    bytes[it->offset++] << 8 |
                    bytes[it->offset++] << 16 |
                    bytes[it->offset++] << 24;
         }
 
-        int32_t int32(const uint8_t* bytes, Iterator* it) {
+        inline int32_t int32(const uint8_t* bytes, Iterator* it) {
             return bytes[it->offset++] |
                    bytes[it->offset++] << 8 |
                    bytes[it->offset++] << 16 |
                    bytes[it->offset++] << 24;
         }
 
-        uint32_t uint32(std::vector<uint8_t>& bytes, Iterator* it) {
+        inline uint32_t uint32(std::vector<uint8_t>& bytes, Iterator* it) {
             return static_cast<uint32_t>(int32(bytes, it));
         }
 
-        uint32_t uint32(const uint8_t* bytes, Iterator* it) {
+        inline uint32_t uint32(const uint8_t* bytes, Iterator* it) {
             return static_cast<uint32_t>(int32(bytes, it));
         }
 
-        std::string utf8Read(std::vector<uint8_t>& bytes, std::size_t offset, std::size_t length) {
+        inline std::string utf8Read(std::vector<uint8_t>& bytes, std::size_t offset, std::size_t length) {
             std::string str = "";
             unsigned int chr = 0;
             for (std::size_t i = offset, end = offset + length; i < end; i++) {
@@ -157,7 +157,7 @@ namespace colyseus
             return str;
         }
 
-        std::string utf8Read(const uint8_t* bytes, std::size_t offset, std::size_t length) {
+        inline std::string utf8Read(const uint8_t* bytes, std::size_t offset, std::size_t length) {
             std::vector<uint8_t> bytesVector(bytes + offset, bytes + offset + length);
             return utf8Read(bytesVector, 0, length);
         }
@@ -185,7 +185,7 @@ namespace colyseus
 //            std::vector<uint8_t> bytesVector(string.start, bytes + offset + length);
 //        }
 
-        std::string decodeString(const unsigned char bytes[], Iterator *it)
+        inline std::string decodeString(const unsigned char bytes[], Iterator *it)
         {
             uint8_t prefix = bytes[it->offset++];
             std::size_t length = 0;
@@ -223,73 +223,73 @@ namespace colyseus
         }
 
 
-        int8_t decodeInt8(const unsigned char bytes[], Iterator *it)
+        inline int8_t decodeInt8(const unsigned char bytes[], Iterator *it)
         {
             return (int8_t)(bytes[it->offset++] << 24 >> 24);
         }
 
-        uint8_t decodeUint8(const unsigned char bytes[], Iterator *it)
+        inline uint8_t decodeUint8(const unsigned char bytes[], Iterator *it)
         {
             return (uint8_t)bytes[it->offset++];
         }
 
-        int16_t decodeInt16(const unsigned char bytes[], Iterator *it)
+        inline int16_t decodeInt16(const unsigned char bytes[], Iterator *it)
         {
             int16_t value = *(int16_t *)&bytes[it->offset];
             it->offset += 2;
             return value;
         }
 
-        uint16_t decodeUint16(const unsigned char bytes[], Iterator *it)
+        inline uint16_t decodeUint16(const unsigned char bytes[], Iterator *it)
         {
             uint16_t value = *(uint16_t *)&bytes[it->offset];
             it->offset += 2;
             return value;
         }
 
-        int32_t decodeInt32(const unsigned char bytes[], Iterator *it)
+        inline int32_t decodeInt32(const unsigned char bytes[], Iterator *it)
         {
             int32_t value = *(int32_t *)&bytes[it->offset];
             it->offset += 4;
             return value;
         }
 
-        uint32_t decodeUint32(const unsigned char bytes[], Iterator *it)
+        inline uint32_t decodeUint32(const unsigned char bytes[], Iterator *it)
         {
             uint32_t value = *(uint32_t *)&bytes[it->offset];
             it->offset += 4;
             return value;
         }
 
-        int64_t decodeInt64(const unsigned char bytes[], Iterator *it)
+        inline int64_t decodeInt64(const unsigned char bytes[], Iterator *it)
         {
             int64_t value = *(int64_t *)&bytes[it->offset];
             it->offset += 8;
             return value;
         }
 
-        uint64_t decodeUint64(const unsigned char bytes[], Iterator *it)
+        inline uint64_t decodeUint64(const unsigned char bytes[], Iterator *it)
         {
             uint64_t value = *(uint64_t *)&bytes[it->offset];
             it->offset += 8;
             return value;
         }
 
-        float32_t decodeFloat32(const unsigned char bytes[], Iterator *it)
+        inline float32_t decodeFloat32(const unsigned char bytes[], Iterator *it)
         {
             float32_t value = *(float32_t *)&bytes[it->offset];
             it->offset += 4;
             return value;
         }
 
-        float64_t decodeFloat64(const unsigned char bytes[], Iterator *it)
+        inline float64_t decodeFloat64(const unsigned char bytes[], Iterator *it)
         {
             float64_t value = *(float64_t *)&bytes[it->offset];
             it->offset += 8;
             return value;
         }
 
-        varint_t decodeNumber(const unsigned char bytes[], Iterator *it)
+        inline varint_t decodeNumber(const unsigned char bytes[], Iterator *it)
         {
             auto prefix = bytes[it->offset++];
             std::cout << "decodeNumber, prefix => " << ((int)prefix) << std::endl;
@@ -360,26 +360,26 @@ namespace colyseus
             }
         }
 
-        bool decodeBoolean(const unsigned char bytes[], Iterator *it)
+        inline bool decodeBoolean(const unsigned char bytes[], Iterator *it)
         {
             return decodeUint8(bytes, it) > 0;
         }
 
-        bool numberCheck(const unsigned char bytes[], Iterator *it)
+        inline bool numberCheck(const unsigned char bytes[], Iterator *it)
         {
             auto prefix = bytes[it->offset];
             return (prefix < 0x80 || (prefix >= 0xca && prefix <= 0xd3));
         }
 
-        bool arrayCheck (const unsigned char bytes[], Iterator *it) {
+        inline bool arrayCheck (const unsigned char bytes[], Iterator *it) {
             return bytes[it->offset] < 0xa0;
         }
 
-        bool nilCheck(const unsigned char bytes[], Iterator *it) {
+        inline bool nilCheck(const unsigned char bytes[], Iterator *it) {
             return bytes[it->offset] == (unsigned char) SPEC::NIL;
         }
 
-        bool indexChangeCheck(const unsigned char bytes[], Iterator *it) {
+        inline bool indexChangeCheck(const unsigned char bytes[], Iterator *it) {
             return bytes[it->offset] == (unsigned char) SPEC::INDEX_CHANGE;
         }
 
@@ -555,6 +555,7 @@ namespace colyseus
                     {
                         ArraySchema<char *> *valueRef = this->getArray(field);
                         ArraySchema<char *> *value = valueRef; // valueRef->clone();
+                        const int refId = decodeNumber(bytes, it);
 
                         int newLength = decodeNumber(bytes, it);
                         int numChanges = decodeNumber(bytes, it);
