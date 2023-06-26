@@ -7,15 +7,18 @@
 
 #include <map>
 #include "SchemaUtils.hpp"
+#include "utils/HasIsSchema.hpp"
 
 namespace colyseus {
     namespace schema {
 
         template <typename T>
-        class MapSchema
+        class MapSchema: public HasIsSchema
         {
         public:
-            MapSchema() {}
+            MapSchema(): HasIsSchema() {
+                SetIsSchema(false);
+            }
             ~MapSchema() {}
 
             std::map<string, T> items;
@@ -23,6 +26,7 @@ namespace colyseus {
             std::function<void(MapSchema<T> *, T, string)> onAdd;
             std::function<void(MapSchema<T> *, T, string)> onChange;
             std::function<void(MapSchema<T> *, T, string)> onRemove;
+
 
             inline T &operator[](const char index[])
             {

@@ -8,16 +8,19 @@
 #include "SchemaUtils.hpp"
 #include "ArraySchema.hpp"
 #include "MapSchema.hpp"
+#include "utils/HasIsSchema.hpp"
 
 namespace colyseus {
     namespace schema {
-        class Schema
+        class Schema: public HasIsSchema
         {
         public:
             std::function<void(Schema*, std::vector<DataChange>)> onChange;
             std::function<void()> onRemove;
 
-            Schema() {}
+            Schema(): HasIsSchema() {
+                SetIsSchema(true);
+            }
             ~Schema() {}
 
             template <typename T>

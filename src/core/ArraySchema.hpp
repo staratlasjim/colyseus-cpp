@@ -6,15 +6,18 @@
 #define COLYSEUSCPP_ARRAYSCHEMA_HPP
 
 #include <iostream>
+#include "utils/HasIsSchema.hpp"
 
 namespace colyseus {
     namespace schema {
 
         template <typename T>
-        class ArraySchema
+        class ArraySchema: public HasIsSchema
         {
         public:
-            ArraySchema() {}
+            ArraySchema(): HasIsSchema() {
+                SetIsSchema(false);
+            }
             ~ArraySchema() {
                 std::cout << "ArraySchema destructor!" << std::endl;
             }

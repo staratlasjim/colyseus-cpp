@@ -37,6 +37,7 @@ add_library(ColyseusLib src/core/Schema.hpp
         src/core/MapSchema.cpp
         src/core/MapSchema.hpp
         src/core/SchemaUtils.hpp
+        src/core/utils/HasIsSchema.hpp
 )
 target_link_libraries(ColyseusLib PUBLIC Poco::Foundation Poco::Net Poco::NetSSL Poco::JSON Boost::boost nlohmann_json::nlohmann_json msgpack-cxx)
 add_executable(colyseusCpp main.cpp
@@ -52,7 +53,8 @@ add_executable(colyseusCppTests
         src/tests/MockWebSocketServer.hpp
         src/tests/MockWebSocketServer.cpp
         src/tests/UtilsTests.cpp
-        src/tests/ClientTest.cpp)
+        src/tests/ClientTest.cpp
+        src/tests/HasIsSchemaTest.cpp)
 target_link_libraries(colyseusCppTests PRIVATE ColyseusLib GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 #add_test(NAME WebSocketExampleTests COMMAND WebSocketExampleTests)
 add_test(AllTestsInMain colyseusCppTests)
