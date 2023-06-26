@@ -4,7 +4,7 @@
 
 #ifndef COLYSEUSTEST_PRIMITIVETYPES_H
 #define COLYSEUSTEST_PRIMITIVETYPES_H
-#include "schema.h"
+#include "Schema.hpp"
 
 using float32_t = float;
 

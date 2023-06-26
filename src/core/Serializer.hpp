@@ -9,7 +9,7 @@
 #include <string>
 #include <memory>
 
-#include "schema.h"
+#include "Schema.hpp"
 using colyseus::schema::Schema;
 using colyseus::schema::Iterator;
 

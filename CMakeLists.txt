@@ -12,7 +12,7 @@ enable_testing()
 find_package(GTest CONFIG REQUIRED)
 
 # Add your main library and executable targets
-add_library(ColyseusLib src/core/schema.h
+add_library(ColyseusLib src/core/Schema.hpp
         src/core/PrimitiveTypes.h
         src/poco/Axios.cpp
         src/poco/Axios.hpp
@@ -32,6 +32,11 @@ add_library(ColyseusLib src/core/schema.h
         src/core/Serializer.cpp
         src/gen/gmp/OrderSchema.hpp
         src/gen/gmp/OverviewRoomState.hpp
+        src/core/ArraySchema.cpp
+        src/core/ArraySchema.hpp
+        src/core/MapSchema.cpp
+        src/core/MapSchema.hpp
+        src/core/SchemaUtils.hpp
 )
 target_link_libraries(ColyseusLib PUBLIC Poco::Foundation Poco::Net Poco::NetSSL Poco::JSON Boost::boost nlohmann_json::nlohmann_json msgpack-cxx)
 add_executable(colyseusCpp main.cpp

@@ -10,7 +10,7 @@
 #include "../core/Serializer.hpp"
 #include "../core/Protocol.hpp"
 #include "../core/SchemaSerializer.hpp"
-#include "../core/schema.h"
+#include "../core/Schema.hpp"
 
 #include <codecvt>
 #include <sstream>

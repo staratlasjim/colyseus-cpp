@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/core/schema.h"
+#include "src/core/Schema.hpp"
 #include "src/core/PrimitiveTypes.h"
 
 #include "src/poco/Axios.hpp"

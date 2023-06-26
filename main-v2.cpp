@@ -11,7 +11,7 @@
 #include "Poco/Net/HTTPClientSession.h"
 #include "src/poco/Axios.hpp"
 #include "src/poco/WebSocketClient.hpp"
-#include "src/core/schema.h"
+#include "src/core/Schema.hpp"
 #include "src/core/Serializer.hpp"
 #include "src/core/SchemaSerializer.hpp"
 #include "src/gen/State.hpp"

@@ -7,7 +7,7 @@
 #ifndef __SCHEMA_CODEGEN_STATE_H__
 #define __SCHEMA_CODEGEN_STATE_H__ 1
 
-#include "../core/schema.h"
+#include "../core/Schema.hpp"
 #include <typeinfo>
 #include <typeindex>
 
