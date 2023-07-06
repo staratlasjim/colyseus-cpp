@@ -208,6 +208,15 @@ protected:
         }
     }
 
+    inline void PrintRawDataToConsole(const std::string& msg, const std::vector<uint8_t>& data) {
+        std::cout << msg;
+        for (uint8_t byte: data) {
+            int rawNumber = static_cast<int>(byte);
+            std::cout << rawNumber << " ";
+        }
+        std::cout << std::endl;
+    }
+
     void _onClose(int32_t StatusCode, const std::string& Reason, bool bWasClean)
     {
         // Clear the onMessageHandlers map
@@ -242,14 +251,10 @@ protected:
             return;
         }
 
+//        this->PrintRawDataToConsole("room handler bytes => ", data);
+
         std::unique_ptr<Iterator> iterator = std::make_unique<Iterator>();
         iterator->offset = 0;
-
-//        std::cout << "room handler bytes => ";
-//        for (uint8_t byte: data) {
-//            std::cout << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(byte) << " ";
-//        }
-//        std::cout << std::endl;
 
         // todo: Make uint8_t
         unsigned char code = data[iterator->offset++];
