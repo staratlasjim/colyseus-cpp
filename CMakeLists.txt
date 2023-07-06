@@ -54,7 +54,8 @@ add_executable(colyseusCppTests
         src/tests/MockWebSocketServer.cpp
         src/tests/UtilsTests.cpp
         src/tests/ClientTest.cpp
-        src/tests/HasIsSchemaTest.cpp)
+        src/tests/HasIsSchemaTest.cpp
+        src/tests/IsSchemaTest.cpp)
 target_link_libraries(colyseusCppTests PRIVATE ColyseusLib GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
 #add_test(NAME WebSocketExampleTests COMMAND WebSocketExampleTests)
 add_test(AllTestsInMain colyseusCppTests)
