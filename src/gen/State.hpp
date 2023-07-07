@@ -20,7 +20,7 @@ class State : public Schema {
 public:
 	 string lastMessage = "";
 	 varint_t msgCount = 0;
-     ArraySchema<int64_t*> *arrayOfNumbers= new ArraySchema<int64_t*>();
+     ArraySchema<int64_t> *arrayOfNumbers= new ArraySchema<int64_t>();
 
 	State() {
 		this->_indexes = {{0, "lastMessage"}, {1, "msgCount"}, {1, "arrayOfNumbers"}};
@@ -88,7 +88,7 @@ protected:
     {
         if (field == "arrayOfNumbers")
         {
-            this->arrayOfNumbers = (ArraySchema<int64_t*> *)value;
+            this->arrayOfNumbers = (ArraySchema<int64_t> *)value;
             return;
 
         }

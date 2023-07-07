@@ -38,11 +38,18 @@ namespace colyseus {
 
                 while (it->offset < totalBytes)
                 {
-                    uint8_t byte = (uint8_t) bytes[it->offset++];
-                    std::cout << "byte: " << byte << std::endl;
+                    auto byte = (uint8_t) bytes[it->offset++];
+                    std::cout << "byte: " << ((int)byte) << std::endl;
+
+                    if(byte == (unsigned char) CODE::SWITCH_TO_STRUCTURE)
+                    {
+                        std::cout << "SWITCH_TO_STRUCTURE: " << ((int)byte) << std::endl;
+                        break;
+                    }
 
                     if (byte == (unsigned char) SPEC::END_OF_STRUCTURE)
                     {
+                        std::cout << "END_OF_STRUCTURE: " << ((int)byte) << std::endl;
                         break;
                     }
 
